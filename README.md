@@ -1,6 +1,6 @@
 # OpenCV on Lambda
 
-Run OpenCV 4.0 on Lambda using Serverless framework
+Run OpenCV 4.0 on Lambda using Serverless framework. Extract images from scanned documents
 
 ## Serverless Setup
 
@@ -22,8 +22,6 @@ Create a `requirements.txt` file with the following
 ```bash
 opencv-python==4.1.0.25
 numpy==1.16.3
-pythonRLSA
-pytesseract
 ```
 
 Also add the following to the `custom` area in the serverless.yaml template.
