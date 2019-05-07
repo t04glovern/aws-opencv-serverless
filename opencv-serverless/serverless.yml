@@ -1,0 +1,44 @@
+service: opencv-serverless
+
+custom:
+  pythonRequirements:
+    dockerizePip: non-linux
+    noDeploy: []
+  OPENCV_PROCESS_BUCKET: devopstar-opencv-processing-bucket
+  OPENCV_OUTPUT_BUCKET: devopstar-opencv-output-bucket
+
+provider:
+  name: aws
+  runtime: python3.7
+  iamRoleStatements:
+    - Effect: Allow
+      Action:
+        - s3:GetObject
+      Resource:
+        - arn:aws:s3:::${self:custom.OPENCV_PROCESS_BUCKET}/*
+    - Effect: Allow
+      Action:
+        - s3:PutObject
+      Resource:
+        - arn:aws:s3:::${self:custom.OPENCV_OUTPUT_BUCKET}/*
+  environment:
+    OPENCV_OUTPUT_BUCKET: ${self:custom.OPENCV_OUTPUT_BUCKET}
+
+functions:
+  opencv:
+    handler: handler.opencv
+    events:
+      - s3:
+          bucket: ${self:custom.OPENCV_PROCESS_BUCKET}
+          event: s3:ObjectCreated:*
+
+resources:
+  Resources:
+
+    S3Bucket:
+      Type: AWS::S3::Bucket
+      Properties:
+        BucketName: ${self:custom.OPENCV_OUTPUT_BUCKET}
+
+plugins:
+  - serverless-python-requirements
